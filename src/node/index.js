@@ -20,6 +20,10 @@ app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
+app.get("/test-connection", (req, res) => {
+  res.send("Database connection is working!");
+});
+
 app.get("/customers", async (req, res) => {
   try {
     const customerData = await pool.query("SELECT * FROM customers");
@@ -35,6 +39,8 @@ app.use(express.json());
 
 app.post("/add-customer", async (req, res) => {
   try {
+    console.log("Request Body:", req.body);
+    
     const { companyName, industry, contact, location } = req.body;
     const newCustomer = await pool.query(
       "INSERT INTO customers (company_name, industry, contact, location) VALUES ($1, $2, $3, $4) RETURNING *",

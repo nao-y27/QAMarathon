@@ -27,7 +27,7 @@
                 <label for="location">所在地:</label>
                 <input type="text" class="form-control" id="location" name="location" required>
             </div>
-            <button type="submit" class="btn btn-primary">送信</button>
+            <button type="submit" class="btn btn-primary">確認</button>
         </form>
     </div>
     <script type="module">
@@ -36,38 +36,24 @@
         document.getElementById('customer-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
-            fetch(config.apiUrl + '/add-customer', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams([...formData])
-            })
-            .then(response => {
-                console.log('Response received:', response);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if(data.success) {
-                    alert('顧客情報が正常に保存されました。');
-                    // フォームをリセット
-                    document.getElementById('customer-form').reset();
-                } else {
-                    alert('保存に失敗しました。');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // サーバーからのエラーメッセージがあれば表示
-                if (error.message) {
-                    alert(`サーバーエラー: ${error.message}`);
-                } else {
-                    alert('エラーが発生しました。詳細はコンソールを確認してください。');
-                }
+
+            //FormDataからオブジェクトに変換
+            const formDataObject = {};
+            formData.forEach((value, key) => {
+                formDataObject[key] = value;
             });
+
+            //オブジェクトからURLパラメータに変換
+            const urlParams = new URLSearchParams();
+            for (const key in formDataObject) {
+                urlParams.append(key, formDataObject[key]);
+            }
+
+            //テンプレート文字列を正しく使用
+            const url = `add-confirm.html?${urlParams.toString()}`;
+
+            //確認画面に遷移
+            window.location.href = url;
         });
     </script>
     <!-- BootstrapのJavaScriptの読み込み -->

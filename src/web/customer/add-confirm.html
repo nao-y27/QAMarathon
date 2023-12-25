@@ -3,16 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>案件情報入力</title>
+    <title>新規追加確認画面</title>
     <!-- Bootstrap CSSの読み込み -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
         <!-- ここにHTMLを書く -->
+        <h2 class="mb-4">確認画面</h2>
+        <div id="confirmationContent">
+            <!-- ここに確認内容を表示するための要素-->
+        </div>
+        <div class="mt-4">
+            <button type="button" class="btn btn-secondary" onclick="goBack()">戻る</button>
+            <button type="button" class="btn btn-primary" onclick="submitForm()">送信</button>
+        </div>
     </div>
+
     <script type="module">
-        <!-- ここにJSを書く -->
+        //ここにJSを書く
+        //URL　パラモーターからデータを取得
+        const urlParams = new URLSearchParams(window.location.search);
+        const companyName = urlParams.get('companyName');
+        const industry = urlParams.get('industry');
+        const contact = urlParams.get('contact');
+        const location = urlParams.get('location');
+
+        console.log('URL Parameters:', urlParams.toString());
+        console.log('Company Name:', companyName);
+        console.log('Industry:', industry);
+        console.log('Contact:', contact);
+        console.log('Location:', location);
+
+        //確認画面にデータを表示
+        const confirmationContent = document.getElementById('confirmationContent');
+        confirmationContent.innerHTML = `
+            <p>会社名: ${companyName}</p>
+            <p>業種: ${industry}</p>
+            <p>連絡先: ${contact}</p>
+            <p>所在地: ${location}</p>
+        `;
+
+    // 送信ボタンがクリックされたときの処理
+    window.submitForm = function() {
+        console.log('Submit button clicked');
+        //ここにフォームを送信するための処理を追加
+        const formData = new FormData();
+        formData.append('companyName', companyName);
+        formData.append('industry', industry);
+        formData.append('contact', contact);
+        formData.append('location', location);
+
+        console.log('Form Data:', Object.fromEntries(formData));
+
+        //POSTリクエストを作成
+        fetch('http://localhost:3521/add-customer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(formData).toString(),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        alert('フォームが送信されました。');
+        // 送信後にadd.htmlに遷移
+        window.location.href = 'add.html';
+    }
+
+    // 戻るボタンがクリックされたときの処理
+    window.goBack = function() {
+        console.log('Go back button clicked');
+        // add.htmlに遷移
+        window.location.href = 'add.html';
+    }
     </script>
     <!-- BootstrapのJavaScriptの読み込み -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
