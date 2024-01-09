@@ -36,6 +36,7 @@
         document.getElementById('customer-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
+            console.log(formData);
 
             //FormDataからオブジェクトに変換
             const formDataObject = {};
@@ -48,9 +49,10 @@
             for (const key in formDataObject) {
                 urlParams.append(key, formDataObject[key]);
             }
+            console.log(urlParams.toString());
 
             //テンプレート文字列を正しく使用
-            const url = `add-confirm.html?${urlParams.toString()}`;
+            const url = `add-confirm.html?` + urlParams.toString();
 
             //確認画面に遷移
             window.location.href = url;
