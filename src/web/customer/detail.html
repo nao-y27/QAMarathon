@@ -19,23 +19,25 @@
             <p id="location">Location: </p>
         </div>
 
-            <!-- 削除ボタンを追加 -->
-            <button id="deleteButton" class="btn btn-danger">削除</button>
+        <!-- 削除・編集ボタンを追加 -->
+        <button id="deleteButton" class="btn btn-danger">削除</button>
+        <button id="editButton" class="btn btn-primary">編集</button>
     </div>
 
     <script type="module">
         // ExpressサーバのAPIエンドポイントのURL
         import config from "../config.js";
-
+    
         // 顧客IDを取得
         const urlParams = new URLSearchParams(window.location.search);
         const customerId = urlParams.get('id');
-        console.log(customerId);
-
         console.log("Fetching customer data for ID:", customerId);
-
+    
         // 顧客詳細情報を取得して表示
-        fetch(`${config.apiUrl}/customer/${customerId}`)
+        document.addEventListener("DOMContentLoaded", function() {
+            // ページの読み込みが完了したときの処理
+    
+            fetch(`${config.apiUrl}/customer/${customerId}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`Fetch failed with status ${response.status}`);
@@ -44,7 +46,7 @@
             })
             .then((customer) => {
                 console.log(customer); // データをログに出力
-
+    
                 // ここに詳細情報の表示処理を追加
                 const detailContent = document.getElementById("customer-details");
                 detailContent.innerHTML = `
@@ -54,29 +56,30 @@
                   <p>Contact: ${customer.contact}</p>
                   <p>Location: ${customer.location}</p>
                 `;
-
+    
                 // 顧客IDを取得
                 const customerId = customer.customer_id;
-
+    
                 // 削除ボタン要素を取得
                 const deleteButton = document.getElementById("deleteButton");
-
+                console.log(deleteButton);
+    
                 // 削除ボタンがクリックされたときの処理
                 deleteButton.addEventListener("click", function () {
                     console.log("Delete button clicked");
                     // 確認メッセージを表示
                     const confirmDelete = confirm("削除してもいいですか？");
-
+    
                     // ユーザーが確認した場合
                     if (confirmDelete) {
                         console.log("Confirmed delete");
-
+    
                         // 顧客IDを取得
                         const customerIdElement = document.getElementById("customerId");
                         const customerId = customerIdElement.textContent.split(': ')[1].trim();
-
-                        consoe.log("Delete customer with ID:", customerId);
-
+    
+                        console.log("Delete customer with ID:", customerId);
+    
                         // 削除リクエストを送信
                         fetch(`${config.apiUrl}/customer/delete/${customerId}`, {
                             method: 'DELETE',
@@ -94,16 +97,29 @@
                         });
                     }
                 });
+
+                // 編集ボタン要素を取得
+                const editButton = document.getElementById("editButton");
+                console.log(editButton);
+
+                //編集ボタンがクリックされたときの処理
+                editButton.addEventListener("click", function () {
+                    console.log("Edit button clicked");
+                    // 編集ページに遷移
+                    window.location.href = `/update.html?id=${customerId}`;
+                })
             })
             .catch((error) => {
                 console.error("fetchエラー:", error);
             });
+        });
     </script>
+    
 
     <!-- BootstrapのJavaScriptと依存関係のリンク -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  
+
 </body>
 </html>

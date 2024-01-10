@@ -40,7 +40,7 @@ app.use(express.json());
 app.post("/add-customer", async (req, res) => {
   try {
     console.log("Request Body:", req.body);
-    
+
     const { companyName, industry, contact, location } = req.body;
     const newCustomer = await pool.query(
       "INSERT INTO customers (company_name, industry, contact, location) VALUES ($1, $2, $3, $4) RETURNING *",
@@ -72,7 +72,7 @@ app.get("/customer/detail.html", async (req, res) => {
     if (customerData.rows.length === 0) {
       res.status(404).json({ error: "顧客が見つかりません" });
     } else {
-      const customerHtml = `
+      const detailHtml = `
       <div class="container mt-5">
         <h1 class="mb-4">顧客詳細</h1>
         <div id="customer-details">
@@ -82,11 +82,12 @@ app.get("/customer/detail.html", async (req, res) => {
           <p>Contact: ${customerData.rows[0].contact}</p>
           <p>Location: ${customerData.rows[0].location}</p>
         </div>
-
+    
         <button id="deleteButton" class="btn btn-danger">削除</button>
+        <button id="editButton" class="btn btn-primary">編集</button>
       </div>
-    `;
-      res.send(customerHtml);
+    `    
+      res.send(detailHtml);
     }
   } catch (err) {
     console.error('/customer/detail.html ルートでエラー:', err);
@@ -94,10 +95,10 @@ app.get("/customer/detail.html", async (req, res) => {
   }
 });
 
-app.delete("/customer/delete", async (req, res) => {
+app.delete("/customer/delete/:customerId", async (req, res) => {
   console.log("DELETE request received");
   try {
-    const customerId = req.query.customerId;
+    const customerId = req.params.customerId;
 
     if (!customerId || !/^\d+$/.test(customerId)) {
       res.status(400).json({ error: "無効な顧客IDです" });
