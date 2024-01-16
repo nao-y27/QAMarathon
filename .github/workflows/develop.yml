@@ -16,12 +16,12 @@ jobs:
           SSH_KEY: ${{ secrets.DEV_SSHE_SSH_KEY }}
 
       - name: Move to QAMarathon Directory
-        run:  cd /app/nao_yoshida
+        run:  cd /app/nao_yoshida/QAMarathon
 
       - name: Print Current Directory
         run: pwd
 
       - name: Check Directory Existence
-        run: ls -a
+       run: ls -a
 
       - run: ssh ${{ steps.ssh.outputs.SERVER }} bash /app/deploy_test.sh nao_yoshida
