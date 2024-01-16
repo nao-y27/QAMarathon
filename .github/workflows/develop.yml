@@ -16,6 +16,6 @@ jobs:
           SSH_KEY: ${{ secrets.DEV_SSHE_SSH_KEY }}
 
       - name: Move to Repository Directory
-        run: cd /app/nao_yoshiad/QAMarathon
+        run: cd /app/nao_yoshida/QAMarathon
 
       - run: ssh ${{ steps.ssh.outputs.SERVER }} bash /app/deploy_test.sh nao_yoshida
