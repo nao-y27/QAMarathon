@@ -15,6 +15,8 @@ jobs:
           SSH_USER: ${{ secrets.DEV_SSH_USER }}
           SSH_KEY: ${{ secrets.DEV_SSHE_SSH_KEY }}
 
+      - run: ls -a /app/nao_yoshida/QAMarathon
+
       - name: Move to Repository Directory
         run: cd /app/nao_yoshida/QAMarathon
 
