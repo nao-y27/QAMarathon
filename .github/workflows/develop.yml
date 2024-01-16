@@ -15,7 +15,10 @@ jobs:
           SSH_USER: ${{ secrets.DEV_SSH_USER }}
           SSH_KEY: ${{ secrets.DEV_SSHE_SSH_KEY }}
 
-      - name: Move to Repository Directory
-        run: cd /app/nao_yoshida/QAMarathon
+      - name: Print Current Directory
+        run: pwd
+
+      - name: Check Directory Existence
+        run: ls /app/nao_yoshida/QAMarathon
 
       - run: ssh ${{ steps.ssh.outputs.SERVER }} bash /app/deploy_test.sh nao_yoshida
