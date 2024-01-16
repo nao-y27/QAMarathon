@@ -16,7 +16,7 @@ jobs:
           SSH_KEY: ${{ secrets.DEV_SSHE_SSH_KEY }}
 
       - name: Move to QAMarathon Directory
-        run:  cd /app/nao_yoshida/QAMarathon
+        run:  cd /app/nao_yoshida
 
       - name: Print Current Directory
         run: pwd
