@@ -21,6 +21,9 @@
     </div>
 
     <script type="module">
+        // ExpressサーバのAPIエンドポイントのURL
+        import config from "../config.js";
+
         //ここにJSを書く
         //URL　パラモーターからデータを取得
         const urlParams = new URLSearchParams(window.location.search);
@@ -57,24 +60,29 @@
         console.log('Form Data:', Object.fromEntries(formData));
 
         //POSTリクエストを作成
-        fetch('http://localhost:3521/add-customer', {
+        fetch('{config.apiUrl}/add-customer', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: new URLSearchParams(formData).toString(),
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             console.log('Success:', data);
+            alert('フォームが送信されました。');
+            // 送信後にlist.htmlに遷移
+            window.location.href = 'list.html';
         })
         .catch(error => {
             console.error('Error:', error);
+            alert('保存に失敗しました。');
         });
-
-        alert('顧客情報が正常に保存されました。');
-        // 送信後にadd.htmlに遷移
-        window.location.href = 'add.html';
     }
 
     // 戻るボタンがクリックされたときの処理
