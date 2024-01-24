@@ -27,13 +27,13 @@
         //ここにJSを書く
         //URL　パラモーターからデータを取得
         const urlParams = new URLSearchParams(window.location.search);
-        const companyName = urlParams.get('companyName');
+        const companyName = urlParams.get('company_name');
         const industry = urlParams.get('industry');
         const contact = urlParams.get('contact');
         const location = urlParams.get('location');
 
         console.log('URL Parameters:', urlParams.toString());
-        console.log('Company Name:', companyName);
+        console.log('Company Name:', company_name);
         console.log('Industry:', industry);
         console.log('Contact:', contact);
         console.log('Location:', location);
@@ -41,7 +41,7 @@
         //確認画面にデータを表示
         const confirmationContent = document.getElementById('confirmationContent');
         confirmationContent.innerHTML = `
-            <p>会社名: ${companyName}</p>
+            <p>会社名: ${company_name}</p>
             <p>業種: ${industry}</p>
             <p>連絡先: ${contact}</p>
             <p>所在地: ${location}</p>
@@ -52,7 +52,7 @@
         console.log('Submit button clicked');
         //ここにフォームを送信するための処理を追加
         const formData = new FormData();
-        formData.append('companyName', companyName);
+        formData.append('company_name', company_name);
         formData.append('industry', industry);
         formData.append('contact', contact);
         formData.append('location', location);
