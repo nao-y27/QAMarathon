@@ -63,7 +63,7 @@
         console.log('Form Data:', Object.fromEntries(formData));
 
         //POSTリクエストを作成
-        fetch(`${apiUrl}/customer`, {
+        fetch(`${apiUrl}/customer?${urlParams.toString()}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
