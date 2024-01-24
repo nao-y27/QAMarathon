@@ -24,9 +24,6 @@
         // ExpressサーバのAPIエンドポイントのURL
         import config from "../config.js";
 
-        // 新しいapiUrlを使用
-        const apiUrl = config.apiUrl;
-
         //ここにJSを書く
         //URL　パラモーターからデータを取得
         const urlParams = new URLSearchParams(window.location.search);
@@ -63,7 +60,7 @@
         console.log('Form Data:', Object.fromEntries(formData));
 
         //POSTリクエストを作成
-        fetch(`${apiUrl}/add-customer`, {
+        fetch(config.apiUrl + `/add-customer`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
