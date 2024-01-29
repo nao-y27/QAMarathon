@@ -16,7 +16,7 @@
         </div>
         <div class="mt-4">
             <button type="button" class="btn btn-secondary" onclick="goBack()">戻る</button>
-            <button type="button" class="btn btn-primary" onclick="submitForm()">送信</button>
+            <button type="button" class="btn btn-primary" id="submitButton">送信</button>
         </div>
     </div>
 
@@ -75,6 +75,8 @@
             // add.htmlに遷移
             window.location.href = 'add.html';
         }
+
+        document.getElementById('submitButton').addEventListener('click', submitForm);
     </script>
     <!-- BootstrapのJavaScriptの読み込み -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
