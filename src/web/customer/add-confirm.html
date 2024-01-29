@@ -15,7 +15,7 @@
             <!-- ここに確認内容を表示するための要素-->
         </div>
         <div class="mt-4">
-            <button type="button" class="btn btn-secondary" onclick="goBack()">戻る</button>
+            <button type="button" class="btn btn-secondary" id="backButton">戻る</button>
             <button type="button" class="btn btn-primary" id="submitButton">送信</button>
         </div>
     </div>
@@ -78,6 +78,7 @@
 
         document.addEventListener('DOMContentLoaded', (event) => {
             document.getElementById('submitButton').addEventListener('click', submitForm);
+            document.getElementById('backButton').addEventListener('click', goBack);
         });
     </script>
     <!-- BootstrapのJavaScriptの読み込み -->
