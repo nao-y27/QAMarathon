@@ -31,31 +31,21 @@
         </form>
     </div>
     <script type="module">
-        import config from '../config.js';
-    
         document.getElementById('customer-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
-            console.log(formData);
-
-            //FormDataからオブジェクトに変換
+    
+            // FormDataをオブジェクトに変換
             const formDataObject = {};
             formData.forEach((value, key) => {
                 formDataObject[key] = value;
             });
-
-            //オブジェクトからURLパラメータに変換
-            const urlParams = new URLSearchParams();
-            for (const key in formDataObject) {
-                urlParams.append(key, formDataObject[key]);
-            }
-            console.log(urlParams.toString());
-
-            //テンプレート文字列を正しく使用
-            const url = `add-confirm.html?` + urlParams.toString();
-
-            //確認画面に遷移
-            window.location.href = url;
+    
+            // ローカルストレージにフォームデータを保存
+            localStorage.setItem('formData', JSON.stringify(formDataObject));
+    
+            // 確認画面に遷移
+            window.location.href = 'add-confirm.html';
         });
     </script>
     <!-- BootstrapのJavaScriptの読み込み -->
