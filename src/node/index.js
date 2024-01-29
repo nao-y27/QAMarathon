@@ -49,7 +49,7 @@ app.post("/add-customer", async (req, res) => {
     res.json({ success: true, customer: newCustomer.rows[0] });
   } catch (err) {
     console.error(err);
-    res.json({ success: false });
+    res.json({ success: false, error: err.message });
   }
 });
 
