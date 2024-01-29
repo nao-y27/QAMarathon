@@ -76,7 +76,9 @@
             window.location.href = 'add.html';
         }
 
-        document.getElementById('submitButton').addEventListener('click', submitForm);
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.getElementById('submitButton').addEventListener('click', submitForm);
+        });
     </script>
     <!-- BootstrapのJavaScriptの読み込み -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
