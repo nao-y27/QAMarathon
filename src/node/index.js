@@ -42,10 +42,16 @@ app.post("/add-customer", async (req, res) => {
     console.log("Request Body:", req.body);
 
     const { company_name, industry, contact, location } = req.body;
+    // ログに受信データを表示
+    console.log("Received data:", { company_name, industry, contact, location });
+
     const newCustomer = await pool.query(
       "INSERT INTO customers (company_name, industry, contact, location) VALUES ($1, $2, $3, $4) RETURNING *",
       [company_name, industry, contact, location]
     );
+    // ログに挿入された顧客データを表示
+    console.log("Inserted customer:", newCustomer.rows[0]);
+    
     res.json({ success: true, customer: newCustomer.rows[0] });
   } catch (err) {
     console.error(err);

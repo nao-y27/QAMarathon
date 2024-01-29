@@ -52,20 +52,20 @@
                 },
                 body: JSON.stringify(formData),
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log('Success:', data);
-                alert('フォームが送信されました。');
-                // 送信後にlist.htmlに移動
-                window.location.href = 'list.html';
+                if (data.success) {
+                    console.log('Success:', data);
+                    alert('フォームが送信されました。')
+                    //送信後にlist.htmlに移動
+                    window.location.href = 'list.html';
+                } else {
+                    cnsoloe.error('Error from server:', data.error);
+                    alert('フォームの送信に失敗しました。');
+                }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Fetch error:', error);
                 alert('フォームの送信に失敗しました。');
             });
         }
