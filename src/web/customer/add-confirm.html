@@ -15,8 +15,8 @@
             <!-- ここに確認内容を表示するための要素-->
         </div>
         <div class="mt-4">
-            <button type="button" class="btn btn-secondary" id="backButton">戻る</button>
-            <button type="button" class="btn btn-primary" id="submitButton">送信</button>
+            <a href="add.html" class="btn btn-secondary">戻る</a>
+            <button id="submitBtn" class="btn btn-primary">送信</button>
         </div>
     </div>
 
@@ -24,67 +24,65 @@
         // ExpressサーバのAPIエンドポイントのURL
         import config from "../config.js";
 
-        const formDataString = localStorage.getItem('formData');
-        if (!formDataString) {
-            // ローカルストレージにフォームデータがない場合、リダイレクトして入力画面に戻る
-            window.location.href = 'add.html';
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // ローカルステージからフォームデータを取得
+            const storedData = JSON.parse(localStorage.getItem('formData'));
 
-        const formData = JSON.parse(formDataString);
+            if (storedData) {
+                // 確認画面に表示するHTMLを構築
+                const confirmationHTML = `
+                    <p><strong>会社名:</strong> ${storedData.company_name}</p>
+                    <p><strong>業種:</strong> ${storedData.industry}</p>
+                    <p><strong>連絡先:</strong> ${storedData.contact}</p>
+                    <p><strong>所在地:</strong> ${storedData.location}</p>
+                `;
 
-        // 確認画面にデータを表示
-        const confirmationContent = document.getElementById('confirmationContent');
-        confirmationContent.innerHTML = `
-            <p>会社名: ${formData.company_name}</p>
-            <p>業種: ${formData.industry}</p>
-            <p>連絡先: ${formData.contact}</p>
-            <p>所在地: ${formData.location}</p>
-        `;
+                // 確認画面に表示
+                document.getElementById('confirmation-content').innerHTML = confirmationHTML;
+            }
 
-        function submitForm() {
-            console.log('Submit button clicked');
+            // 送信ボタンがクリックされた時の処理
+            document.getElementById('submitBtn').addEventListener('click', function() {
+                // サーバーにデータを送信する処理を追加
+                sendDataToServer(storedData);
+            });
+        });
 
-            // ここでサーバーにフォームデータを送信する処理を追加
-            fetch(config.apiUrl + '/add-customer', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
-            .then(response => {
+        // サーバーにデータを送信する関する
+        async function sendDataToServer(data) {
+            try {
+                const response = await fetch(config.apiUrl + `/add-customer`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
                 if (!response.ok) {
-                    throw new Error(`Network response was not ok. Status: ${response.status}`);
+                    console.error('Server error:', response.status, response.statusText);
+                    // サーバー側でエラーが発生した場合は確認画面にとどまる
+                    alert('データの送信に失敗しました。');
+                    return;
                 }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    console.log('Success:', data);
-                    alert('フォームが送信されました。')
-                    //送信後にlist.htmlに移動
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // 登録が成功した場合はリスト一覧画面に遷移
+                    alert('フォームが送信されました。');
                     window.location.href = 'list.html';
                 } else {
-                    console.error('Error from server:', data.error);
-                    alert('フォームの送信に失敗しました。');
+                    // 登録が失敗した場合は確認画面にとどまる
+                    alert('データの送信に失敗しました。');
                 }
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-                alert('フォームの送信に失敗しました。');
-            });
+            } catch (error) {
+                console.error('Network error:', error.message);
+                // ネットワークエラーが発生した場合は確認画面にとどまる
+                alert('ネットワークエラーが発生しました。');
+            }
         }
 
-        function goBack() {
-            console.log('Go back button clicked');
-            // add.htmlに遷移
-            window.location.href = 'add.html';
-        }
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            document.getElementById('submitButton').addEventListener('click', submitForm);
-            document.getElementById('backButton').addEventListener('click', goBack);
-        });
     </script>
     <!-- BootstrapのJavaScriptの読み込み -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
