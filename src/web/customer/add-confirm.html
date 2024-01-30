@@ -38,7 +38,12 @@
                 `;
 
                 // 確認画面に表示
-                document.getElementById('confirmation-content').innerHTML = confirmationHTML;
+                const confirmationContent = document.getElementById('confirmationContent');
+                if (confirmationContent) {
+                    confirmationContent.innerHTML = confirmationHTML;
+                } else {
+                    console.error("Element with ID 'confirmationContent' not found");
+                }
             }
 
             // 送信ボタンがクリックされた時の処理
