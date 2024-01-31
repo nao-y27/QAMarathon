@@ -10,19 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '14'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '14'
 
-    - name: Install Dependencies
-      run: npm install
+      - name: Install Dependencies
+        run: npm install
 
-    - name: Run Tests
-      run: npm test
+      - name: Run Tests
+        run: npm test
 
   deploy_staging:
     runs-on: ubuntu-latest
@@ -30,11 +30,16 @@ jobs:
     needs: test
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Deploy to Staging
-      run: bash /app/deploy.sh ${{ secrets.STAGING_SSH_USER }} ${{ secrets.STAGING_SSH_HOST }} ${{ secrets.STAGING_SSH_PORT }} ${{ secrets.STAGING_SSH_KEY }}
+      - name: Set up SSH for Staging
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.DEV_SSHE_SSH_KEY }}
+
+      - name: Deploy to Staging
+        run: bash /app/deploy.sh ${{ secrets.DEV_SSH_USER }} ${{ secrets.DEV_SSH_HOST }} ${{ secrets.DEV_SSH_PORT }} ${{ secrets.DEV_SSHE_SSH_KEY }}
 
   deploy_production:
     runs-on: ubuntu-latest
@@ -42,8 +47,13 @@ jobs:
     needs: deploy_staging
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Deploy to Production
-      run: bash /app/deploy.sh ${{ secrets.PRODUCTION_SSH_USER }} ${{ secrets.PRODUCTION_SSH_HOST }} ${{ secrets.PRODUCTION_SSH_PORT }} ${{ secrets.PRODUCTION_SSH_KEY }}
+      - name: Set up SSH for Production
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.PRODUCTION_SSH_KEY }}
+
+      - name: Deploy to Production
+        run: bash /app/deploy.sh ${{ secrets.PRODUCTION_SSH_USER }} ${{ secrets.PRODUCTION_SSH_HOST }} ${{ secrets.PRODUCTION_SSH_PORT }} ${{ secrets.PRODUCTION_SSH_KEY }}
