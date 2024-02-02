@@ -10,6 +10,10 @@
   <body>
     <div class="container mt-5">
       <h1 class="mb-4">Customer List</h1>
+
+      <!-- index.html へのリンク -->
+      <a href="../index.html">Go to Index</a>
+      
       <table class="table table-striped">
         <thead class="thead-dark">
           <tr>
@@ -26,15 +30,17 @@
 
     <script type="module">
       // ExpressサーバのAPIエンドポイントのURL
-      import config from "./config.js";
-
+      import config from "../config.js";
+      
       fetch(`${config.apiUrl}/customers`)
         .then((response) => {
-          console.log(response); // ここでレスポンスオブジェクトをログに出力
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
           return response.json();
         })
         .then((data) => {
-          console.log(data); // ここで解析されたデータをログに出力
+          console.log("Received data:", data); // ここで解析されたデータをログに出力
           const list = document.getElementById("customer-list");
           data.forEach((customer, index) => {
             const row = list.insertRow();
@@ -42,7 +48,12 @@
             const cell2 = row.insertCell(1);
             const cell3 = row.insertCell(2);
             cell1.textContent = index + 1;
-            cell2.textContent = customer.companyname;
+
+            const companyLink = document.createElement("a");
+            companyLink.href = `${config.apiUrl}/customer/detail.html?id=${customer.customer_id}`;
+            companyLink.textContent = customer.company_name;
+            cell2.appendChild(companyLink);
+
             cell3.textContent = customer.contact;
           });
         })
