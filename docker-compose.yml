@@ -14,14 +14,14 @@ services:
     container_name: "nodejs"
     image: node:20-bullseye
     ports:
-      - "3000:3000"
+      - "3521:3521"
     volumes:
       - "./src/node:/app"
       - "./work:/work"
     working_dir: /app
     tty: true
   db:
-    container_name: "postgres"
+    container_name: "postgres2"
     image: postgres:14-alpine
     restart: always
     shm_size: 256mb

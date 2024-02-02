@@ -3,16 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>案件情報入力</title>
+    <title>新規追加確認画面</title>
     <!-- Bootstrap CSSの読み込み -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
         <!-- ここにHTMLを書く -->
+        <h2 class="mb-4">確認画面</h2>
+        <div id="confirmationContent">
+            <!-- ここに確認内容を表示するための要素-->
+        </div>
+        <div class="mt-4">
+            <a href="add.html" class="btn btn-secondary">戻る</a>
+            <button id="submitBtn" class="btn btn-primary">送信</button>
+        </div>
     </div>
+
     <script type="module">
-        <!-- ここにJSを書く -->
+        // ExpressサーバのAPIエンドポイントのURL
+        import config from "../config.js";
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // ローカルステージからフォームデータを取得
+            const storedData = JSON.parse(localStorage.getItem('formData'));
+
+            if (storedData) {
+                // 確認画面に表示するHTMLを構築
+                const confirmationHTML = `
+                    <p><strong>会社名:</strong> ${storedData.company_name}</p>
+                    <p><strong>業種:</strong> ${storedData.industry}</p>
+                    <p><strong>連絡先:</strong> ${storedData.contact}</p>
+                    <p><strong>所在地:</strong> ${storedData.location}</p>
+                `;
+
+                // 確認画面に表示
+                const confirmationContent = document.getElementById('confirmationContent');
+                if (confirmationContent) {
+                    confirmationContent.innerHTML = confirmationHTML;
+                } else {
+                    console.error("Element with ID 'confirmationContent' not found");
+                }
+            }
+
+            // 送信ボタンがクリックされた時の処理
+            document.getElementById('submitBtn').addEventListener('click', function() {
+                // サーバーにデータを送信する処理を追加
+                sendDataToServer(storedData);
+            });
+        });
+
+        // サーバーにデータを送信する関する
+        async function sendDataToServer(data) {
+            try {
+                const response = await fetch(config.apiUrl + `/add-customer`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    console.error('Server error:', response.status, response.statusText);
+                    // サーバー側でエラーが発生した場合は確認画面にとどまる
+                    alert('データの送信に失敗しました。');
+                    return;
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // 登録が成功した場合はリスト一覧画面に遷移
+                    alert('フォームが送信されました。');
+                    window.location.href = 'list.html';
+                } else {
+                    // 登録が失敗した場合は確認画面にとどまる
+                    alert('データの送信に失敗しました。');
+                }
+            } catch (error) {
+                console.error('Network error:', error.message);
+                // ネットワークエラーが発生した場合は確認画面にとどまる
+                alert('ネットワークエラーが発生しました。');
+            }
+        }
+
     </script>
     <!-- BootstrapのJavaScriptの読み込み -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

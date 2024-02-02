@@ -1,5 +1,5 @@
 const config = {
-  apiUrl: 'http://localhost:3521'
+  apiUrl: '/api_nao_yoshida'
 };
 
 export default config;
