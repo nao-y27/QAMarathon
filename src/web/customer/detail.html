@@ -11,115 +11,67 @@
     <div class="container mt-5">
         <h1 class="mb-4">顧客詳細</h1>
         <div id="customer-details">
-            <!-- 顧客詳細情報を表示する要素 -->
-            <p id="customerId">Customer ID: </p>
-            <p id="companyName">Company Name: </p>
-            <p id="industry">Industry: </p>
-            <p id="contact">Contact: </p>
-            <p id="location">Location: </p>
+            <!-- 顧客情報はここに表示されます -->
         </div>
 
-        <!-- 削除・編集ボタンを追加 -->
+        <!-- 削除ボタン -->
         <button id="deleteButton" class="btn btn-danger">削除</button>
-        <button id="editButton" class="btn btn-primary">編集</button>
     </div>
 
     <script type="module">
         // ExpressサーバのAPIエンドポイントのURL
         import config from "../config.js";
-    
-        // 顧客IDを取得
+
+        // URLから顧客IDを取得
         const urlParams = new URLSearchParams(window.location.search);
         const customerId = urlParams.get('id');
-        console.log("Fetching customer data for ID:", customerId);
-    
-        // 顧客詳細情報を取得して表示
-        document.addEventListener("DOMContentLoaded", function() {
-            // ページの読み込みが完了したときの処理
-    
-            fetch(`${config.apiUrl}/customer/${customerId}`)
-            .then((response) => {
+
+        // 顧客情報を取得して表示する関数
+        async function fetchAndDisplayCustomerDetails() {
+            try {
+                const response = await fetch(`${config.apiUrl}/customer/detail.html?id=${customerId}`);
                 if (!response.ok) {
-                    throw new Error(`Fetch failed with status ${response.status}`);
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-                return response.json();
-            })
-            .then((customer) => {
-                console.log(customer); // データをログに出力
-    
-                // ここに詳細情報の表示処理を追加
-                const detailContent = document.getElementById("customer-details");
-                detailContent.innerHTML = `
-                  <p>Customer ID: ${customer.customer_id}</p>
-                  <p>Company Name: ${customer.company_name}</p>
-                  <p>Industry: ${customer.industry}</p>
-                  <p>Contact: ${customer.contact}</p>
-                  <p>Location: ${customer.location}</p>
-                `;
-    
-                // 顧客IDを取得
-                const customerId = customer.customer_id;
-    
-                // 削除ボタン要素を取得
-                const deleteButton = document.getElementById("deleteButton");
-                console.log(deleteButton);
-    
-                // 削除ボタンがクリックされたときの処理
-                deleteButton.addEventListener("click", function () {
-                    console.log("Delete button clicked");
-                    // 確認メッセージを表示
-                    const confirmDelete = confirm("削除してもいいですか？");
-    
-                    // ユーザーが確認した場合
-                    if (confirmDelete) {
-                        console.log("Confirmed delete");
-    
-                        // 顧客IDを取得
-                        const customerIdElement = document.getElementById("customerId");
-                        const customerId = customerIdElement.textContent.split(': ')[1].trim();
-    
-                        console.log("Delete customer with ID:", customerId);
-    
-                        // 削除リクエストを送信
-                        fetch(`${config.apiUrl}/customer/delete/${customerId}`, {
-                            method: 'DELETE',
-                        })
-                        .then(response => {
-                            console.log("Delete request sent");
-                            if (!response.ok) {
-                                throw new Error(`削除に失敗しました: ${response.status}`);
-                            }
-                            // 削除が成功した場合、トップページにリダイレクト
-                            window.location.href = "/customer/list.html";
-                        })
-                        .catch(error => {
-                            console.error("削除エラー：", error);
-                        });
+                const customerData = await response.text();
+                document.getElementById('customer-details').innerHTML = customerData;
+            } catch (error) {
+                console.error(error);
+                alert('顧客情報の取得に失敗しました。');
+            }
+        }
+
+        // ページ読み込み時に顧客情報を取得して表示する
+        window.onload = fetchAndDisplayCustomerDetails;
+
+        // 削除ボタンがクリックされた時の処理
+        document.getElementById('deleteButton').addEventListener('click', async () => {
+            if (confirm('本当にこの顧客を削除しますか？')) {
+                try {
+                    const response = await fetch(`${config.apiUrl}/customer/delete/${customerId}`, {
+                        method: 'DELETE',
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
                     }
-                });
-
-                // 編集ボタン要素を取得
-                const editButton = document.getElementById("editButton");
-                console.log(editButton);
-
-                //編集ボタンがクリックされたときの処理
-                editButton.addEventListener("click", function () {
-                    console.log("Edit button clicked");
-                    // 編集ページに遷移
-                    window.location.href = `/update.html?id=${customerId}`;
-                })
-            })
-            .catch((error) => {
-                console.error("fetchエラー:", error);
-            });
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('顧客が削除されました。');
+                        window.location.href = 'list.html';
+                    } else {
+                        alert('顧客の削除に失敗しました。');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert('エラーが発生しました。');
+                }
+            }
         });
     </script>
-    
 
-   <!-- BootstrapのJavaScriptの読み込み -->
-   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
+    <!-- BootstrapのJavaScriptの読み込み -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
