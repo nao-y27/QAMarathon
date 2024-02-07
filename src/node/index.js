@@ -57,4 +57,25 @@ app.post("/add-customer", async (req, res) => {
   }
 });
 
+app.delete("/customers/:customerId", async (req, res) => {
+  try {
+    const customerId = req.params.customerId;
+
+    const deletedCustomer = await pool.query(
+      "DELETE FROM customers WHERE customer_id = $1 RETURNING *",
+      [customerId]
+    );
+
+    if (deletedCustomer.rowCount === 0) {
+      res.status(404).json({ error: "Customer not found" });
+    } else {
+      res.json({ success: true, message: "Customer deleted successfully" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+
 app.use(express.static("public"));
