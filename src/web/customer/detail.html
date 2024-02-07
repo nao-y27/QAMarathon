@@ -29,7 +29,7 @@
         // 顧客情報を取得して表示する関数
         async function fetchAndDisplayCustomerDetails() {
             try {
-                const response = await fetch(`${config.apiUrl}/customer/detail.html?id=${customerId}`);
+                const response = await fetch(`${config.apiUrl}/customers/${customerId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -48,7 +48,7 @@
         document.getElementById('deleteButton').addEventListener('click', async () => {
             if (confirm('本当にこの顧客を削除しますか？')) {
                 try {
-                    const response = await fetch(`${config.apiUrl}/customer/delete/${customerId}`, {
+                    const response = await fetch(`${config.apiUrl}/customers/${customerId}`, {
                         method: 'DELETE',
                     });
                     if (!response.ok) {
